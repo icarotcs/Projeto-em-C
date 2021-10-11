@@ -1,0 +1,789 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
+#include <ctype.h>
+#include <locale.h>
+
+double total = 0.00;
+
+    typedef struct qtd
+    {
+        int estoque[12];
+        int qtd_vendida[12];
+        float valor_produtos[12];
+    } qtd_produtos;
+
+void menu ();
+
+void login (char email[], char senha[], char usuario, char modelo[], char espaco1[], qtd_produtos *pont_prod)
+{
+    system("cls");
+
+    printf("\t\t\t\t\t----------------------------------------------\n");
+    printf("\t\t\t\t\t\t\t  LOGIN ADMIN\n");
+    printf("\t\t\t\t\t----------------------------------------------\n");
+
+    system("color 0a");
+    char new_senha[40];
+    char new_email[40];
+    int compara;
+    int compara2;
+    int tamanho = 0, j = 0, count = 0, i = 0;
+    int contador;
+
+    printf("\n\n\t\t\t\t\tDigite seu email: ");
+    fgets(new_email, 40, stdin);
+    printf("\n\n\t\t\t\t\tDigite sua senha: ");
+
+    contador = strlen(new_email);
+
+    for(int i = 0; i < contador; i++)
+    {
+        if(new_email[i] == '\n')
+        {
+            new_email[i] = '\0';
+        }
+    }
+    do
+    {
+        new_senha[tamanho] = getch();
+        if(new_senha[tamanho] != '\r' && new_senha[tamanho] != '\b')
+        {
+            j++;
+            printf("%c", modelo[j]);
+        }
+        if(new_senha[tamanho] == '\b')
+        {
+            count++;
+            tamanho--;
+            tamanho--;
+            new_senha[j] = '\b';
+            modelo[j] = ' ';
+
+            printf("%c", new_senha[j]);
+            printf("%c",espaco1[count]);
+            printf("%c", new_senha[j]);
+        }
+    }
+    while(new_senha[tamanho++] != '\r');
+
+    tamanho--;
+    new_senha[tamanho] = '\0';
+
+        compara = strcmp(senha,new_senha);
+        compara2 = strcmp(email,new_email);
+
+        if(compara == 0 && compara2 == 0)
+        {
+            printf("\n\n\n\t\t\t\t\t\tLOGIN EFETUADO COM SUCESSO!!!!\n");
+            sleep(3);
+            menuAdmin(&pont_prod);
+        }
+        else
+        {
+            system("color 0c");
+            printf("\n\n\n\t\t\t\t\t\t  E-mail ou senha incorretos!\n");
+            printf("\n\n\n\n\t\t\t\t\t\t       TENTE NOVAMENTE!\n");
+            sleep(2);
+            login(email,senha,usuario,modelo,espaco1,pont_prod);
+        }
+}
+
+int verifica_senha (char senha[], char new_senha[],char modelo[], char espaco1[])
+{
+    system("cls");
+    int tamanho = 0;
+    int count = 0;
+    int j = 0;
+    int compara_senha1;
+    int tam;
+    char new_senha2[80];
+
+    printf("\nCrie uma senha: \n");
+    do
+    {
+        senha[tamanho] = getch();
+        fflush(stdin);
+        if(senha[tamanho] !='\r' && senha[tamanho] != '\b')
+        {
+            j++;
+            printf("%c", modelo[j]);
+        }
+        if(senha[tamanho] == '\b')
+        {
+            count++;
+            tamanho--;
+            tamanho--;
+            senha[j] = '\b';
+            modelo[j] = ' ';
+            printf("%c", senha[j]);
+            printf("%c", espaco1[count]);
+            printf("%c", senha[j]);
+        }
+    }
+    while(senha[tamanho++]!='\r');
+
+    tamanho--;
+    senha[tamanho]='\0';
+
+    tamanho = 0;
+
+    printf("\nConfirme sua senha: \n");
+
+    do
+    {
+        new_senha2[tamanho] = getch();
+        if(new_senha2[tamanho] !='\r' && new_senha2[tamanho] != '\b')
+        {
+            j++;
+            printf("%c", modelo[j]);
+        }
+        if(new_senha2[tamanho] == '\b')
+        {
+            count++;
+            tamanho--;
+            tamanho--;
+            new_senha2[j] = '\b';
+            modelo[j] = ' ';
+
+            printf("%c", new_senha2[j]);
+            printf("%c",espaco1[count]);
+            printf("%c", new_senha2[j]);
+        }
+
+    }
+    while(new_senha2[tamanho++]!='\r');
+
+    tamanho--;
+    new_senha2[tamanho]='\0';
+
+    compara_senha1 = strcmp(senha, new_senha2);
+
+    if(compara_senha1 == 0)
+    {
+        printf("\nCadastro efetuado com sucesso!!! \n");
+        sleep(2);
+        return 1;
+    }
+    else
+    {
+        printf("\nSenhas nao correspondem.\n");
+        sleep(2);
+        verifica_senha(senha, new_senha, modelo, espaco1);
+    }
+}
+void cadastro (char email[], char senha[], char usuario[], char modelo[], char espaco1[], qtd_produtos *pont_prod)
+{
+
+    system("cls");
+    int tamanho = 0;
+    int count = 0;
+    int j = 0;
+    int compara_senha1;
+    int tam;
+    int tam2;
+    char new_senha2[80];
+    char dominio[8] = {'@','u','m','j','.','c','o','m'};
+
+
+    printf("\t\t\t\t\t****** CADASTRO DE USUARIO ADMIN ******\n");
+    system("color 0a");
+    printf("\nDigite seu nome e sobrenome: \n");
+
+    fgets(usuario, 40, stdin);
+    fflush(stdin);
+    tam = strlen(usuario);
+    for(int i = 0; i < tam; i++)
+    {
+        if(usuario[0] < 'a' && islower(usuario[0]))
+        {
+            printf("Seu nome precisa ter pelo menos 1 letra.\n");
+            sleep(2);
+            cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+//        if(isupper(usuario[i]))
+//        {
+//            continue;
+//        }
+        if(usuario[i] == '1' || usuario[i] == '2' || usuario[i] == '3' || usuario[i] == '4' || usuario[i] == '5' || usuario[i] == '6' ||
+           usuario[i] == '7' ||usuario[i] == '8' || usuario[i] == '9' || usuario[i] == '0')
+        {
+            printf("Seu nome não pode conter numeros.\n");
+            sleep(2);
+            cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+        if(usuario[0] == '\n')
+        {
+            printf("Seu nome precisa ter pelo menos 1 letra.\n");
+            sleep(2);
+            cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+        if(usuario[0] == ' ')
+        {
+            printf("Seu nome nao pode iniciar com um espaço.\n");
+            sleep(2);
+            cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+        if(!(usuario[i] < 'a' && usuario[i] < '0'))
+        {
+            continue;
+        }
+        else if(usuario[i] == ' ')
+        {
+            continue;
+        }
+        else if(usuario[i] == '\n')
+            {
+                usuario[i] = '\0';
+                break;
+            }
+        else
+        {
+            printf("Numeros ou caracteres especiais nao sao validos\n");
+            sleep(2);
+            cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+    }
+
+    printf("\nDigite um email: *obs: seu dominio eh @umj.com*\n");
+
+    fgets(email, 40, stdin);
+    fflush(stdin);
+
+    tam2 = strlen(email);
+
+        for(int i = 0; i < tam ; i++)
+        {
+            if(email[0] < 'a')
+            {
+                printf("Seu endereço de email precisa comecar com uma letra. Tente novamente.\n");
+                sleep(2);
+                cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+            }
+            if(!(email[i] < 'a' && email[i] < '0'))
+            {
+                continue;
+            }
+            else if(email[i] == '.' || email[i] == '-' || email[i] == '_')
+            {
+                continue;
+            }
+            else if(email[i] == '\n')
+            {
+                email[i] = '\0';
+                break;
+            }
+            else
+            {
+                printf("Nao utilize caracteres especial, permitido somente '.', '-', '_'.\n");
+                sleep(2);
+                cadastro(email, senha, usuario, modelo, espaco1, pont_prod);
+            }
+        }
+        email[tam2 - 1] = '\0';
+
+        strcat(email, "@umj.com");
+
+        printf("\nSeu email eh: %s\n\n", email);
+        printf("Voce sera redirecionado para criar sua senha\n");
+        sleep(3);
+
+        int retorno = verifica_senha(senha,new_senha2,modelo,espaco1);
+        if(retorno == 1)
+        {
+            login(email, senha, usuario, modelo, espaco1, pont_prod);
+        }
+}
+
+int main(){
+
+    setlocale(LC_ALL,"Portuguese");
+    qtd_produtos pont_prod;
+
+    char modelo [40] = {'*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*',
+                        '*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*'};
+    char espaco1[40] = {' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                        ' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
+    char a[80];
+    char b[80];
+    char c[80];
+
+    cadastro(a, b, c, modelo, espaco1, &pont_prod);
+    menuAdmin(&pont_prod,0);
+
+    return 0;
+}
+
+void menuAdmin(qtd_produtos *pont_prod, int qtd_mesas)
+{
+    FILE *pont_estoque;
+    int k = 0;
+
+    pont_estoque = fopen("estoque.txt","r");
+    while(!feof(pont_estoque))
+    {
+        fscanf(pont_estoque,"%d", &pont_prod->estoque[k]);
+        k++;
+    }
+    fclose(pont_estoque);
+
+    FILE *pont_arq;
+
+    char cardapio[11][50];
+    k = 0;
+
+    pont_arq = fopen("cardapio.txt","r");
+    while(!feof(pont_arq))
+    {
+        fgets(cardapio[k],50,pont_arq);
+        k++;
+    }
+    fclose(pont_arq);
+
+    FILE *pont_mesas;
+
+    char mesas[15][50];
+
+    pont_mesas = fopen("mesas.txt","r");
+    k = 0;
+    while(!feof(pont_mesas))
+    {
+        fgets(mesas[k],50,pont_mesas);
+        k++;
+    }
+    fclose(pont_mesas);
+
+    FILE *pont_valor;
+
+    k = 0;
+    pont_valor = fopen("valor_produtos.txt","r");
+    while(!feof(pont_valor))
+    {
+        fscanf(pont_valor,"%f", &pont_prod->valor_produtos[k]);
+        k++;
+    }
+    fclose(pont_valor);
+
+    system("cls");
+    int opcoes = -1;
+    char saida;
+    char continuar;
+
+    printf("\t\t\t\t############### AREA ADMINISTRATIVA ###############\n\n");
+
+    printf("1.Adicionar quantidades do estoque\n2.Adicionar quantidades de mesas\n3.Consultar estoque atual de produtos\n4.Consultar Valores dos Produtos\n\n5.Abrir bar\n0.Fechar\n\n\nDigite o que deseja: ");
+
+    scanf("%d", &opcoes);
+    fflush(stdin);
+
+    switch(opcoes)
+    {
+        case 0:
+            printf("Se você sair o estoque sera resetado. Confirma? [s,n]\n");
+            fflush(stdin);
+            scanf("%s", &saida);
+            if(saida == 'n')
+            {
+            menuAdmin(pont_prod, qtd_mesas);
+            }
+            else if(saida == 's')
+            {
+            return 0;
+            }
+            else
+            {
+            printf("*Opcao indisponivel*\n");
+            sleep(3);
+            system("cls");
+            menuAdmin(pont_prod,qtd_mesas);
+            }
+        break;
+        case 1:
+            system("cls");
+            printf("\t\t\t\t\t CONTROLE DE ESTOQUE\n");
+            for(int i = 0; i < 11; ++i)
+            {
+                printf("\nDigite a quantidade inicial de:");
+                printf("\n%s:", cardapio[i]);
+                scanf("%d", &pont_prod->estoque[i]);
+                //printf("\nAgora insira o valor do produto: %sR$ ",cardapio[i]);
+                //scanf("%f", &pont_prod->valor_produtos[i]);
+                setbuf(stdin, NULL);
+
+                if(pont_prod->estoque[i] < 0)
+                {
+                    system("cls");
+                    printf("OPERACAO INVALIDA\n");
+                    for(int j = 0; j < i; j++)
+                    {
+                        printf("\n.%s: %d", cardapio[j],pont_prod->estoque[j]);
+                    }
+                    i--;
+                }
+            }
+            pont_estoque = fopen("estoque.txt","w");
+
+            for(int i = 0; i < 11; i++)
+            {
+                fprintf(pont_estoque,"%d\n", pont_prod->estoque[i]);
+            }
+            fclose(pont_estoque);
+            printf("\t\t\t\t\tVoce sera redirecionado de volta ao menu!\n");
+            sleep(2);
+            menuAdmin(pont_prod,qtd_mesas);
+        break;
+        case 2:
+            printf("Informe a quantidade de mesas disponiveis\n");
+            scanf("%d", &qtd_mesas);
+            for(int i = 0; i < qtd_mesas; i++)
+            {
+                printf("%s", mesas[i]);
+            }
+            printf("\t\t\t\t\tVoce sera redirecionado de volta ao menu!\n");
+            sleep(2);
+            menuAdmin(pont_prod,qtd_mesas);
+        break;
+        case 3:
+            printf("\n* ESTOQUE ATUAL *\n");
+            system("cls");
+            for(int i = 0; i < 11; ++i)
+            {
+                printf(".%s: (%d)\n", cardapio[i], pont_prod->estoque[i]);
+            }
+            printf("Tecle ENTER para continuar: ");
+            setbuf(stdin, NULL);
+            scanf("%c", &opcoes);
+            if(opcoes == 10)
+            {
+                printf("\nDirecionando de volta para o menu... Aguarde!\n");
+                sleep(2);
+                menuAdmin(pont_prod,qtd_mesas);
+            }
+        break;
+        case 4:
+            system("cls");
+            printf("\n\t\t\t\t\t\tValores atual\n\n");
+            for(int i = 0; i < 11; i++)
+            {
+                printf("%s\n R$%.2f\n\n", cardapio[i], pont_prod->valor_produtos[i]);
+            }
+            char escolha;
+            printf("\nDeseja fazer alguma alteracao no valor de algum produto? [s,n]\n");
+            scanf("%s", &escolha);
+            if(escolha == 'n')
+            {
+                printf("Voce sera direcionado ao menu novamente\n");
+                sleep(3);
+                menuAdmin(pont_prod,qtd_mesas);
+            }
+            else if(escolha == 's')
+            {
+                float new_valor;
+                int numero;
+                system("cls");
+                printf("Lista de produtos\n");
+                for(int i = 0; i < 11; i++)
+                {
+                    printf("[%d] %s\n", i, cardapio[i]);
+                }
+                printf("\nEscolha qual item voce deseja fazer a alteracao de acordo com seu numero\n");
+                scanf("%d", &numero);
+                printf("%sValor atual: R$ %.2f\n", cardapio[numero], pont_prod->valor_produtos[numero]);
+                printf("\nDigite o novo valor\nR$ ");
+                scanf("%f", &new_valor);
+                pont_prod->valor_produtos[numero] = new_valor;
+
+                pont_valor = fopen("valor_produtos.txt","w");
+
+                for(int i = 0; i < 11; i++)
+                {
+                    fprintf(pont_valor,"%.2f\n", pont_prod->valor_produtos[i]);
+                }
+
+                fclose(pont_valor);
+                pont_valor = fopen("valor_produtos.txt","r");
+                    for(int i = 0; i < 11; i++)
+                {
+                    fscanf(pont_valor,"%f", &pont_prod->valor_produtos[i]);
+                }
+                fclose(pont_valor);
+                printf("\nValor alterado com sucesso, consulte novamente a tabela de valores.");
+                sleep(3);
+                menuAdmin(pont_prod,qtd_mesas);
+            }
+            else
+            {
+            printf("*Opcao indisponivel*\n");
+            sleep(3);
+            system("cls");
+            menuAdmin(pont_prod,qtd_mesas);
+            }
+        break;
+        case 5:
+            system("cls");
+            area_cliente(qtd_mesas,mesas,pont_prod,cardapio);
+        break;
+
+        default:
+            printf("* Opcao (%d) indisponivel, tente novamente *\n", opcoes);
+            sleep(3);
+            menuAdmin(pont_prod,qtd_mesas);
+        break;
+    }
+}
+
+int area_cliente(int qtd_mesas, char mesas_disp[15][50], qtd_produtos *pont_prod, char cardapio[15][50])
+{
+    system("cls");
+
+    int escolha = -1;
+    printf("\t\t\t\t\t\t############### Seja bem vindo ao Boteco UMJ ###############\n");
+    printf("1.Faca seu Pedido\n2.Consultar valores\n\n0.Fechar\nDigite o que deseja: ");
+    scanf("%d", &escolha);
+    char sair;
+    char continuar;
+
+    switch(escolha)
+    {
+//        case 0:
+//          printf("Se você sair o estoque será resetado. Confirma? [s,n]\n");
+//          setbuf(stdin, NULL);
+//          scanf("%s", &sair);
+//            if(sair == 'n')
+//            {
+//              menu(estoque, qtd_vendida, produtos);
+//            }
+//            else if(sair == 's')
+//            {
+//              exit(0);
+//            }
+//            else
+//            {
+//              printf("*Opção indisponível*\n");
+//              system("sleep 3");
+//              system("clear");
+//              menu(estoque, qtd_vendida, produtos);
+//            }
+//        break;
+        case 1:
+            system("cls");
+            printf("\nEscolha o produto e depois a quantidade. Ex.: produto(1) quantidade(10) 1 10.\n");
+              for(int i = 0; i < 11; ++i)
+              {
+                    printf("%d.%s\n", i+1, cardapio[i]);
+              }
+                printf("12.Finalizar\n");
+                printf("Digite seu pedido: \n");
+                pedido(pont_prod,cardapio);
+
+//            pedido(estoque, qtd_vendida, produtos);
+        break;
+//        case 2: printf("\n* ESTOQUE ATUAL *\n");
+//            for(int i = 0; i < 7; ++i)
+//            {
+//                printf(".%s: (%d)\n", produtos[i], estoque[i]);
+//            }
+//            printf("Tecle ENTER para continuar: ");
+//            setbuf(stdin, NULL);
+//            scanf("%c", &continuar);
+//            if(continuar == 10)
+//            {
+//                menu(estoque, qtd_vendida, produtos);
+//            }
+//        break;
+//        case 3: system("clear");
+//          printf("\nVendas finalizadas!\nTotal vendido no dia: R$%.2lf\n", total);
+//          break;
+//          default: printf("* Opção (%d) indisponível, tente novamente *\n", escolha);
+//            system("sleep 3");
+//            menu(estoque, qtd_vendida, produtos);
+//          break;
+  }
+return 0;
+}
+
+int pedido(qtd_produtos *pont_prod, char cardapio[15][50], int qtd_mesas, char mesas_disp[15][50])
+{
+    FILE *pont_arq;
+    int produto;
+    scanf("%d", &produto);
+
+    switch(produto)
+    {
+        case 1:
+            scanf("%d", &pont_prod->qtd_vendida[0]);
+            if(pont_prod->qtd_vendida[0] > pont_prod->estoque[0])
+            {
+                printf("* Infelizmente essa quantidade de Agua esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[0]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[0] -= pont_prod->qtd_vendida[0];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 2:
+            scanf("%d", &pont_prod->qtd_vendida[1]);
+            if(pont_prod->qtd_vendida[1] > pont_prod->estoque[1])
+            {
+                printf("* Infelizmente essa quantidade de Heineiken esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[1]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[1] -= pont_prod->qtd_vendida[1];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 3:
+            scanf("%d", &pont_prod->qtd_vendida[2]);
+            if(pont_prod->qtd_vendida[2] > pont_prod->estoque[2])
+            {
+                printf("* Infelizmente essa quantidade de Devassa esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[2]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[2] -= pont_prod->qtd_vendida[2];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 4:
+            scanf("%d", &pont_prod->qtd_vendida[3]);
+            if(pont_prod->qtd_vendida[3] > pont_prod->estoque[3])
+            {
+                printf("* Infelizmente essa quantidade de Kaiser esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[3]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[3] -= pont_prod->qtd_vendida[3];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 5:
+            scanf("%d", &pont_prod->qtd_vendida[4]);
+            if(pont_prod->qtd_vendida[4] > pont_prod->estoque[4])
+            {
+                printf("* Infelizmente essa quantidade de Pitu esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[4]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[4] -= pont_prod->qtd_vendida[4];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 6:
+            scanf("%d", &pont_prod->qtd_vendida[5]);
+            if(pont_prod->qtd_vendida[5] > pont_prod->estoque[5])
+            {
+                printf("* Infelizmente essa quantidade de CocaCola esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[5]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[5] -= pont_prod->qtd_vendida[5];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 7:
+            scanf("%d", &pont_prod->qtd_vendida[6]);
+            if(pont_prod->qtd_vendida[6] > pont_prod->estoque[6])
+            {
+                printf("* Infelizmente essa quantidade de Guarana esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[6]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[6] -= pont_prod->qtd_vendida[6];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 8:
+            scanf("%d", &pont_prod->qtd_vendida[7]);
+            if(pont_prod->qtd_vendida[7] > pont_prod->estoque[7])
+            {
+                printf("* Infelizmente essa quantidade de ChurrasCarne esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[7]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[7] -= pont_prod->qtd_vendida[7];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 9:
+            scanf("%d", &pont_prod->qtd_vendida[8]);
+            if(pont_prod->qtd_vendida[8] > pont_prod->estoque[8])
+            {
+                printf("* Infelizmente essa quantidade de ChurrasFrango esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[8]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[8] -= pont_prod->qtd_vendida[8];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 10:
+            scanf("%d", &pont_prod->qtd_vendida[9]);
+            if(pont_prod->qtd_vendida[9] > pont_prod->estoque[9])
+            {
+                printf("* Infelizmente essa quantidade de ChurrasCalabresa esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[9]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[9] -= pont_prod->qtd_vendida[9];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 11:
+            scanf("%d", &pont_prod->qtd_vendida[10]);
+            if(pont_prod->qtd_vendida[10] > pont_prod->estoque[10])
+            {
+                printf("* Infelizmente essa quantidade de BatataFrita esta indisponivel, quantidade atual (%d), digite novamente.*\n", pont_prod->estoque[10]);
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+            else
+            {
+                pont_prod->estoque[10] -= pont_prod->qtd_vendida[10];
+                pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+            }
+        break;
+        case 12:
+                pont_arq = fopen("estoque.txt","w");
+                for(int i = 0; i < 11; i++)
+                {
+                    fprintf(pont_arq,"%d\n", pont_prod->estoque[i]);
+                }
+                fclose(pont_arq);
+
+                pont_arq = fopen("estoque.txt","r");
+                for(int i = 0; i < 11; i++)
+                {
+                    fscanf(pont_arq, "%d", &pont_prod->estoque[i]);
+                }
+                fclose(pont_arq);
+
+            area_cliente(qtd_mesas,mesas_disp,pont_prod,cardapio);
+        default:
+            printf("* Opção (%d) indisponível, tente novamente. *\n", produto);
+            pedido(pont_prod,cardapio,qtd_mesas,mesas_disp);
+        break;
+  }
+
+return 0;
+
+}
+//    printf("ESCOLHA SUA MESA\n");
+//    printf("Mesas disponiveis: \n %d\n", qtd_mesas);
+//
+//    for(int i = 0; i < qtd_mesas; i++)
+//    {
+//        printf("[%d]%s\n", i + 1, mesas_disp[i]);
+//    }
+//} oi
